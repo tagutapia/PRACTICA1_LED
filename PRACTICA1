@@ -1,0 +1,59 @@
+PROCESSOR 16F887
+    #include <xc.inc>
+    
+    ;CONFIG word1
+    CONFIG FOSC = INTRC_NOCLKOUT
+    CONFIG WDTE = OFF
+    CONFIG PWRTE = ON
+    CONFIG MCLRE = OFF
+    CONFIG CP = OFF
+    CONFIG CPD = OFF
+    CONFIG BOREN = OFF
+    CONFIG IESO = OFF
+    CONFIG FCMEN = ON
+    CONFIG DEBUG = ON
+    
+    ;CONFIG word2
+    CONFIG BOR4V = BOR40V
+    CONFIG WRT = OFF
+    	
+    PSECT resetVec, class=CODE, delta=2
+    resetVec:
+	PAGESEL main
+	goto main
+	
+    PSECT code
+    LED:
+    bcf STATUS, 0
+    rrf PORTA, 1
+    btfss PORTA,0
+    goto LED
+    PAGESEL main
+    return
+    
+    LED2:
+    bcf STATUS, 0
+    rlf PORTA, 1
+    btfss PORTA,7
+    goto LED2
+    PAGESEL main
+    return
+	
+    PSECT code
+    main:
+    BANKSEL PORTA
+    clrf PORTA
+    BANKSEL ANSEL
+    clrf ANSEL
+    BANKSEL TRISA
+    clrf TRISA
+    loop:
+    BANKSEL PORTA
+    movlw 0x80
+    movwf PORTA
+    call LED
+    call LED2
+    goto loop
+    END
+
+      
