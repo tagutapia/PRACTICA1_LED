@@ -1,0 +1,140 @@
+;Practica display de 7 segmentos
+PROCESSOR 16F887
+    #include <xc.inc>
+    
+    ;CONFIG word1
+    CONFIG FOSC = INTRC_NOCLKOUT
+    CONFIG WDTE = OFF
+    CONFIG PWRTE = ON
+    CONFIG MCLRE = OFF
+    CONFIG CP = OFF
+    CONFIG CPD = OFF
+    CONFIG BOREN = OFF
+    CONFIG IESO = OFF
+    CONFIG FCMEN = ON
+    CONFIG DEBUG = ON
+    
+    ;CONFIG word2
+    CONFIG BOR4V = BOR40V
+    CONFIG WRT = OFF
+    
+    PSECT udata
+    pause:
+	DS 1
+    cont:
+	DS 1
+    cont2:
+	DS 1
+	
+PSECT code
+    delay:
+    movlw 0xFF ;255
+    movwf cont
+    cont_loop:
+    movlw 0xF7 ;247
+    movwf cont2
+    cont_loop2:
+    movlw 0x08  ;8
+    movwf pause
+    loop3:
+    decfsz pause, f   ;255x247x8=503.88 ms
+    goto loop3
+    decfsz cont2, f    
+    goto cont_loop2
+    decfsz cont, f
+    goto cont_loop
+    return
+    
+    PSECT ResetVec, class=CODE, delta=2
+    ResetVec:
+    PAGESEL main
+    goto main
+    
+    PSECT code
+	num0:
+	movlw 0x7E 
+	movwf PORTA
+	PAGESEL main
+	return
+	num1:
+	movlw 0x30
+	movwf PORTA
+	PAGESEL main
+	return
+	num2:
+	movlw 0x6D
+	movwf PORTA
+	PAGESEL main
+	return
+	num3:
+	movlw 0x79
+	movwf PORTA
+	PAGESEL main
+	return
+	num4:
+	movlw 0x33
+	movwf PORTA
+	PAGESEL main
+	return
+	num5:
+	movlw 0x5B
+	movwf PORTA
+	PAGESEL main
+	return
+	num6:
+	movlw 0x5F
+	movwf PORTA
+	PAGESEL main
+	return
+	num7:
+	movlw 0x70
+	movwf PORTA
+	PAGESEL main
+	return
+	num8:
+	movlw 0x7F
+	movwf PORTA
+	PAGESEL main
+	return
+	num9:
+	movlw 0x7B
+	movwf PORTA
+	PAGESEL main
+	return
+    
+    PSECT ResetVec, class=CODE, delta=2
+    main:
+    clrf INTCON
+    BANKSEL OSCCON
+    movlw 0x75
+    movwf OSCCON
+    BANKSEL PORTA
+    clrf PORTA
+    BANKSEL ANSEL
+    clrf ANSEL
+    BANKSEL TRISA
+    clrf TRISA
+    BANKSEL PORTA
+    loop:
+    call delay
+    call num0
+    call delay
+    call num1
+    call delay
+    call num2
+    call delay
+    call num3
+    call delay
+    call num4
+    call delay
+    call num5
+    call delay
+    call num6
+    call delay
+    call num7
+    call delay
+    call num8
+    call delay
+    call num9    
+    goto loop
+    END
